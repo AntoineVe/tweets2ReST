@@ -1,6 +1,7 @@
 # tweets2ReST
 Transforms tweets in ReST (for pelican static site generator).
 Handles URL, mentions and pictures.
+Records only "real tweet" (no direct mentions, no retweets).
 
 # Thanks to...
 * [Python](https://www.python.org/)
