@@ -60,7 +60,7 @@ def tweet2rest(tweets_json):
                     if len(tweet['entities']['hashtags']) > 0:
                         data += ":tags: "
                         for tag in tweet['entities']['hashtags']:
-                            data += "#" + tag['text'] + ", "
+                            data += tag['text'] + ", "
                         data = data[:-2] # Remove last comma-space
                         data += "\n"
                 if "media" in tweet['entities'].keys() and tweet['entities']['media'][0]['type'] == "photo":
