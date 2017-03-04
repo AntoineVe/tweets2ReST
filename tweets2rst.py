@@ -24,9 +24,7 @@ locale.setlocale(locale.LC_ALL, 'C')
 def get_tweets(token, token_key, con_secret, con_secret_key, twitter_name):
     try:
         articles = listdir('./content/SocialNetworks')
-        for article in articles:
-            if not 'tweet_' in article:
-                articles.remove(article)
+        article = [article for article in articles if 'tweet' in article]
         articles.sort()
         last_recorded_tweet_id = int(articles[-1][6:-4])
         logging.debug("last recoreded tweet : " + str(last_recorded_tweet_id))
