@@ -53,6 +53,11 @@ def tweet2rest(tweets_json):
             data += "\n"
             date = datetime.strptime(tweet['created_at'], "%a %b %d %H:%M:%S %z %Y")
             data += ":date: " + date.astimezone(tz.gettz('Europe/Paris')).strftime("%Y-%m-%d %H:%M:%S") + "\n"
+            try:
+                location = str(tweet['place']['full_name']) + "," + str(tweet['coordinates']['coordinates'][1]) + "," + str(tweet['coordinates']['coordinates'][0])
+                data += "location: " + location
+            except:
+                pass
             if "entities" in tweet.keys():
                 if "hashtags" in tweet['entities'].keys():
                     if len(tweet['entities']['hashtags']) > 0:
