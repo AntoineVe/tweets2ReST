@@ -8,7 +8,7 @@ Code licence : WTFPL
 
 import twitter
 from datetime import datetime
-from dateutil import tz
+from tzlocal import get_localzone
 import locale
 from urlextract import URLExtract
 import PIL.Image as Image
@@ -18,10 +18,12 @@ from os import stat, mkdir, listdir
 import argparse
 import logging
 
-locale.setlocale(locale.LC_ALL, 'C')
-
 
 def get_tweets(token, token_key, con_secret, con_secret_key, twitter_name):
+    """
+    Retrieve last tweets : do not retrieve already retrieved tweets by using
+    `since_id` Twitter API feature.
+    """
     try:
         articles = listdir('./content/SocialNetworks')
         articles = [article for article in articles if 'tweet' in article]
@@ -53,6 +55,11 @@ def get_tweets(token, token_key, con_secret, con_secret_key, twitter_name):
 def tweet2rest(tweets_json):
     """
     Use the JSON from twitter API to make one ReST article by tweet.
+    Save image if needed.
+    Add some metadatas if relevant:
+     - :location: show place and GPS coordinates
+     - :tags: repeat twitter hashtags
+     - :image: and :og_image: to display a picture and use it as OpenGraph pic
     """
     for tweet in tweets_json:
         if (
@@ -66,9 +73,13 @@ def tweet2rest(tweets_json):
             data += tweet['id_str'] + "\n"
             data += "####################\n"
             data += "\n"
+            current_locale = locale.getlocale(locale.LC_ALL)
+            locale.setlocale(locale.LC_ALL, 'C')
+            # Because twitter json use C
             date = datetime.strptime(
                     tweet['created_at'], "%a %b %d %H:%M:%S %z %Y")
-            date = date.astimezone(tz.gettz('Europe/Paris'))
+            locale.setlocale(locale.LC_ALL, current_locale)
+            date = date.astimezone(get_localzone())
             data = date.strftime("%Y-%m-%d %H:%M:%S")
             data += ":date: "
             data += date + "\n"
