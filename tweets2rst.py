@@ -33,19 +33,19 @@ def get_tweets(token, token_key, con_secret, con_secret_key, twitter_name):
     except:
         last_recorded_tweet_id = None
         logging.debug("No recorded tweets founded")
-    t = twitter.Twitter(
+    twitter_api = twitter.Twitter(
             auth=twitter.OAuth(
                 token,
                 token_key,
                 con_secret,
                 con_secret_key))
     if last_recorded_tweet_id:
-        my_tweets = t.statuses.user_timeline(
+        my_tweets = twitter_api.statuses.user_timeline(
                 screen_name=twitter_name,
                 count=600,
                 since_id=last_recorded_tweet_id)
     else:
-        my_tweets = t.statuses.user_timeline(
+        my_tweets = twitter_api.statuses.user_timeline(
                 screen_name=twitter_name,
                 count=600)
     logging.debug(str(len(my_tweets)) + " tweets retrieved")
