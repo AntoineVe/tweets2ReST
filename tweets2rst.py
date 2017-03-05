@@ -166,7 +166,7 @@ def tweet2rest(tweets_json):
                     + tweet['id_str']
                     + ".rst", "w", encoding="UTF-8")
             f.write(data)
-            logging.debug("Tweet number " + tweet['id_str'] + " saved !")
+            logging.info("Tweet number " + tweet['id_str'] + " saved !")
             f.close()
 
 
