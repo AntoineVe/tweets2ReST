@@ -73,12 +73,11 @@ def tweet2rest(tweets_json):
             data += tweet['id_str'] + "\n"
             data += "####################\n"
             data += "\n"
-            current_locale = locale.getlocale(locale.LC_ALL)
             locale.setlocale(locale.LC_ALL, 'C')
             # Because twitter json use C
             date = datetime.strptime(
                     tweet['created_at'], "%a %b %d %H:%M:%S %z %Y")
-            locale.setlocale(locale.LC_ALL, current_locale)
+            locale.setlocale(locale.LC_ALL, '')
             date = date.astimezone(get_localzone())
             data = date.strftime("%Y-%m-%d %H:%M:%S")
             data += ":date: "
