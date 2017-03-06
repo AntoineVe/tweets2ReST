@@ -79,7 +79,7 @@ def tweet2rest(tweets_json):
                     tweet['created_at'], "%a %b %d %H:%M:%S %z %Y")
             locale.setlocale(locale.LC_ALL, '')
             date = date.astimezone(get_localzone())
-            data = date.strftime("%Y-%m-%d %H:%M:%S")
+            date = date.strftime("%Y-%m-%d %H:%M:%S")
             data += ":date: "
             data += date + "\n"
             try:
@@ -127,7 +127,7 @@ def tweet2rest(tweets_json):
                     logging.debug(
                             "Image "
                             + tweet['entities']['media'][0]['id_str']
-                            + img_ext + "saved")
+                            + img_ext + " saved")
                     for img in tweet['entities']['media']:
                         summary = summary.replace(img['url'], '')
                         text = text.replace(img['url'], '')
