@@ -11,9 +11,9 @@ from datetime import datetime
 from tzlocal import get_localzone
 import locale
 from urlextract import URLExtract
-import PIL.Image as Image
-import io
 import urllib.request
+from io import BytesIO
+import imghdr
 from os import stat, mkdir, listdir
 import argparse
 import logging
@@ -101,12 +101,16 @@ def tweet2rest(tweets_json):
                 if (
                         "media" in tweet['entities'].keys()
                         and tweet['entities']['media'][0]['type'] == "photo"):
-                    data += ":image: {photo}../images/tweets/"
-                    data += tweet['entities']['media'][0]['id_str'] + ".jpg\n"
-                    data += ":og_image: /images/tweets/"
-                    data += tweet['entities']['media'][0]['id_str'] + ".jpg\n"
                     img = urllib.request.urlopen(
                             tweet['entities']['media'][0]['media_url']).read()
+                    img_IO = BytesIO(img)
+                    img_ext = '.' + imghdr.what(img_IO)
+                    data += ":image: {photo}../images/tweets/"
+                    data += tweet['entities']['media'][0]['id_str']
+                    data += img_ext + "\n"
+                    data += ":og_image: /images/tweets/"
+                    data += tweet['entities']['media'][0]['id_str']
+                    data += img_ext + "\n"
                     try:
                         stat("./content/images")
                     except:
@@ -115,14 +119,16 @@ def tweet2rest(tweets_json):
                         stat("./content/images/tweets")
                     except:
                         mkdir("./content/images/tweets")
-                    Image.open(io.BytesIO(img)).save(
+                    img_file = open(
                             "./content/images/tweets/"
                             + tweet['entities']['media'][0]['id_str']
-                            + ".jpg", quality=95, optimize=True)
+                            + img_ext, "wb")
+                    img_file.write(img)
+                    img_file.close()
                     logging.debug(
                             "Image "
                             + tweet['entities']['media'][0]['id_str']
-                            + ".jpg saved")
+                            + img_ext + "saved")
                     for img in tweet['entities']['media']:
                         summary = summary.replace(img['url'], '')
                         text = text.replace(img['url'], '')
