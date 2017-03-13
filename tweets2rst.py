@@ -91,7 +91,7 @@ def tweet2rest(tweets_json):
                             tweet['coordinates']['coordinates'][0])
                 except:
                     location += "||"
-                data += "location: " + location + "\n"
+                data += ":location: " + location + "\n"
             except:
                 pass
             if "entities" in tweet.keys():
