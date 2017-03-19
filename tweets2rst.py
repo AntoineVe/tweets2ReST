@@ -69,9 +69,9 @@ def tweet2rest(tweets_json):
                 and 'Instagram' not in tweet['source']):
             text = tweet['text']
             summary = text.split("\n")[0]
-            data = "####################\n"
+            data = "#"*len(tweet['id_str']) + "\n"
             data += tweet['id_str'] + "\n"
-            data += "####################\n"
+            data += "#"*len(tweet['id_str']) + "\n"
             data += "\n"
             locale.setlocale(locale.LC_ALL, 'C')
             # Because twitter json use C
@@ -123,12 +123,11 @@ def tweet2rest(tweets_json):
                         stat("./content/images/tweets")
                     except:
                         mkdir("./content/images/tweets")
-                    img_file = open(
+                    with open(
                             "./content/images/tweets/"
                             + tweet['entities']['media'][0]['id_str']
-                            + img_ext, "wb")
-                    img_file.write(img)
-                    img_file.close()
+                            + img_ext, "wb") as img_file:
+                        img_file.write(img)
                     logging.debug(
                             "Image "
                             + tweet['entities']['media'][0]['id_str']
@@ -182,13 +181,12 @@ def tweet2rest(tweets_json):
                 stat("./content/SocialNetworks")
             except:
                 mkdir("./content/SocialNetworks")
-            f = open(
+            with open(
                     "./content/SocialNetworks/tweet_"
                     + tweet['id_str']
-                    + ".rst", "w", encoding="UTF-8")
-            f.write(data)
+                    + ".rst", "w", encoding="UTF-8") as f:
+                f.write(data)
             logging.info("Tweet number " + tweet['id_str'] + " saved !")
-            f.close()
 
 
 if __name__ == '__main__':
