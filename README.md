@@ -10,12 +10,13 @@ Records only "real tweet" (no direct mentions, no retweets).
 * Python's modules :
   * [twitter](https://pypi.python.org/pypi/twitter)
   * [urlextract](https://pypi.python.org/pypi/urlextract)
-  * core modules : `json`, `datetime`, `dateutil`, `locale`, `PIL`, `io`, `urllib.request`, `os`, `argparse` and `logging`
+  * [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/)
+  * core modules : `json`, `datetime`, `dateutil`, `locale`, `PIL`, `io`, `urllib.request`, `os`, `argparse`, `logging` and `urllib.request`
 * [Pelican static site generator](http://docs.getpelican.com)
 
 # Usage
 1. Install `python3`
-2. Install third-party required modules (`twitter` and `urlextract`) [This explains how to do](https://docs.python.org/3/installing/index.html)
+2. Install third-party required modules (see `requirements.txt`) [This explains how to do](https://docs.python.org/3/installing/index.html)
 3. Create a twitter app <https://apps.twitter.com/> and create an access token (copy all credentials somewhere safe)
 4. copy the script `tweets2rst.py` in your "pelican" directory
 5. `python3 tweets2rst.py token token_key con_secret con_secret_key twitter_name`
