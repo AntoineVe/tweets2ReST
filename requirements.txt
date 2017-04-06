@@ -2,3 +2,6 @@ twitter
 urlextract
 PIL
 tzlocal
+imghdr
+urllib.request
+bs4
