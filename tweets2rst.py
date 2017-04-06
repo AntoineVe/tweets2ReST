@@ -17,7 +17,9 @@ import imghdr
 from os import stat, mkdir, listdir
 import argparse
 import logging
-
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+import imghdr
 
 def get_tweets(token, token_key, con_secret, con_secret_key, twitter_name):
     """
@@ -136,8 +138,10 @@ def tweet2rest(tweets_json):
                         summary = summary.replace(img['url'], '')
                         text = text.replace(img['url'], '')
                 # TODO : Add gallery support for multiple photos in a tweet.
+            urls = list()
             for url in URLExtract().find_urls(text):
-                text = text.replace(url, "`"+url+" <"+url+">`_")
+                urls.append(url)
+                text = text.replace(url, "")
             text_2 = list()
             for word in text.split():
                 if word[0] == "@" or word[0:2] == ".@":
@@ -177,6 +181,49 @@ def tweet2rest(tweets_json):
             data += ":summary: " + summary + "\n"
             data += "\n"
             data += text
+            if urls:
+                url_nb = 0
+                for url in urls:
+                    url_title = str()
+                    url_image = str()
+                    url_url = str()
+                    url_description = str()
+                    url_site = str()
+                    card = str()
+                    soup = BeautifulSoup(urlopen(url).read().decode(), "html5lib")
+                    for meta in soup.find_all('meta'):
+                        if meta.get("property"):
+                            if "og:title" == meta.get("property"):
+                                url_title = meta.get("content")
+                            elif "og:url" == meta.get("property"):
+                                url_url = meta.get("content")
+                            elif "og:image" == meta.get("property"):
+                                url_image = meta.get("content")
+                            elif "og:description" == meta.get("property"):
+                                url_description = meta.get("content")
+                            elif "og:site_name" == meta.get("property"):
+                                url_site = meta.get("content")
+                    card += "\n"
+                    if url_image:
+                        img = BytesIO(urlopen(url_image).read())
+                        img_ext = imghdr.what(img)
+                        with open("./content/images/tweets/card_"
+                                + tweet['id_str']
+                                + "_"
+                                + str(url_nb) + "." + img_ext, "wb") as i:
+                            i.write(img.read())
+                        card += "\t.. image:: images/tweets/card_"
+                        card += str(tweet['id_str']) + "_" + str(url_nb) + "." + img_ext
+                        card += "\n"
+                        card += "\t\t:alt: " + url_title + "\n"
+                        card += "\t\t:align: left\n"
+                    card += "\t\n"
+                    card += "\t" + url_description + "\n"
+                    card += "\t\n"
+                    card += "\t -- `" + url_title + " via " + url_site
+                    card += " <" + url_url + ">`_\n"
+                    data += card
+                    url_nb += 1
             try:
                 stat("./content/SocialNetworks")
             except:
