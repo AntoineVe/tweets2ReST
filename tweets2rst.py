@@ -19,7 +19,7 @@ import argparse
 import logging
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-import imghdr
+
 
 def get_tweets(token, token_key, con_secret, con_secret_key, twitter_name):
     """
@@ -190,7 +190,8 @@ def tweet2rest(tweets_json):
                     url_description = str()
                     url_site = str()
                     card = str()
-                    soup = BeautifulSoup(urlopen(url).read().decode(), "html5lib")
+                    soup = BeautifulSoup(
+                            urlopen(url).read().decode(), "html5lib")
                     for meta in soup.find_all('meta'):
                         if meta.get("property"):
                             if "og:title" == meta.get("property"):
@@ -208,12 +209,13 @@ def tweet2rest(tweets_json):
                         img = BytesIO(urlopen(url_image).read())
                         img_ext = imghdr.what(img)
                         with open("./content/images/tweets/card_"
-                                + tweet['id_str']
-                                + "_"
-                                + str(url_nb) + "." + img_ext, "wb") as i:
+                                    + tweet['id_str']
+                                    + "_"
+                                    + str(url_nb) + "." + img_ext, "wb") as i:
                             i.write(img.read())
                         card += "\t.. image:: images/tweets/card_"
-                        card += str(tweet['id_str']) + "_" + str(url_nb) + "." + img_ext
+                        card += str(tweet['id_str'])
+                        card += + "_" + str(url_nb) + "." + img_ext
                         card += "\n"
                         card += "\t\t:alt: " + url_title + "\n"
                         card += "\t\t:align: left\n"
